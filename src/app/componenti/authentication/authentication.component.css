@@ -1,0 +1,31 @@
+.authentication-container {
+  background-color: red;
+  top: 0;
+  right: 0;
+  position: fixed;
+}
+
+.mat-mdc-menu-trigger {
+  background-color: #212121;
+  border-color: transparent;
+  /*color: white;*/
+}
+
+/* colore del contenuto del mat-menu */
+.mat-mdc-menu-item {
+  background-color: #212121;
+  color: white;
+}
+
+
+/* colore dei tre puntini dell'authentication */
+mat-icon.mat-icon.notranslate.material-icons.mat-ligature-font.mat-icon-no-color {
+  color: white;
+  cursor: pointer;
+}
+
+
+
+
+
+

@@ -1,0 +1,337 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  min-width: 1500px;
+  min-height: 800px;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
+.home{
+  display: flex;
+  flex-grow: 1;
+  background-color: #212121;
+  width: 100%;
+  min-width: 1500px;
+  min-height: 800px;
+}
+
+
+.sidebar{
+  max-width: 22vw;
+  background-color: #171717;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.loginDiv{
+  position: absolute;
+  top: 0%;
+  right: 0;
+}
+
+.inputDiv{
+  display: inline-grid;
+  align-items: center; /* Allinea gli elementi verticalmente al centro */
+  height: 25vh;
+  width: 410px;
+  max-width: 410px;
+  margin-bottom: -30px;
+}
+
+.selectImageDiv{
+  max-width: 800px;
+  display: grid;
+}
+
+
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+.centerContent {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+h1, h2 {
+  font-size: 32px;
+  margin: 20px;
+  text-align: center;
+  color: white;
+}
+
+
+/* Tabs Styles */
+.tabs-container {
+}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  background-color: #ccc;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: background-color 0.3s ease;
+}
+
+.tab.active {
+  background-color: #999;
+}
+
+
+
+/* Form Styles */
+.input-form {
+  margin-bottom: 20px;
+}
+
+.input-prompt {
+  width: -webkit-fill-available;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
+
+.select-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+
+}
+
+.select-wrapper {
+  flex: 1;
+}
+
+.option-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+/* Loading Indicator Styles */
+.loading-indicator {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Image Container Styles */
+.image-container {
+  text-align: -webkit-center;}
+
+.generated-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.image-overlay {
+  position: relative;
+}
+
+.prompt-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #fff;
+}
+
+.download-icon {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: #fff;
+}
+
+
+/*
+
+PARTE SULLA SELEZIONE DELL'IMMAGINE
+
+
+ */
+
+
+#inputImage{
+  color: white;
+}
+
+
+/*
+.selected-image {
+  max-width: 100%; /* Imposta la larghezza massima al 100% del contenitore
+  max-height: 100%; /* Imposta l'altezza massima al 100% del contenitore
+}
+*/
+
+
+.save-reset-button-div {
+  text-align: center;
+}
+
+/* Stile per il pulsante di reset */
+.reset-button {
+  margin-top: 10px;
+  background-color: #ff4444; /* Colore di sfondo del pulsante */
+  color: white; /* Colore del testo del pulsante */
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.reset-button:hover {
+  cursor: pointer;
+  background-color: #cc0000;
+}
+
+.save-button {
+  margin-top: 10px;
+  background-color: #33cc33;
+  color: white; /* Colore del testo del pulsante */
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  margin-right: 20px;
+}
+
+.save-button:hover {
+  cursor:pointer;
+  background-color: #196619;
+}
+
+.edit-button {
+  margin-top: 10px;
+  background-color: #3B80BB;
+  color: white; /* Colore del testo del pulsante */
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  margin-right: 20px;
+}
+
+.edit-button:hover {
+  cursor:pointer;
+  background-color: #1f4261;
+}
+
+
+/* Stile per l'immagine selezionata */
+img {
+  display: block; /* Imposta l'elemento img come blocco */
+  max-width: 100%; /* Assicura che l'immagine non superi la larghezza del suo contenitore */
+  height: auto; /* Imposta l'altezza automaticamente per mantenere le proporzioni */
+  margin-top: 10px; /* Aggiungi spazio sopra l'immagine */
+  border: 1px solid #ccc; /* Aggiungi un bordo sottile intorno all'immagine */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Aggiungi un'ombra leggera all'immagine */
+}
+
+
+
+
+/*
+
+FINE PARTE SELEZIONE IMMAGINE
+
+*/
+
+
+/*
+
+INIZIO PARTE POPUP IMAGE
+
+ */
+
+
+.popup-image-div {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,.9);
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+  align-content: center;
+  overflow-y: auto;
+}
+
+.popup-image-div span{
+  position: absolute;
+  top: 0;
+  right: 10px;
+  font-size: 40px;
+  font-weight: bolder;
+  color: #fff;
+  cursor: pointer;
+  z-index: 10;
+}
+
+#popup-image-img {
+  border: 5px solid #fff;
+  border-radius: 5px;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: auto;
+}
+
+
+
+/*
+
+FINE PARTE POPUP IMAGE
+
+ */
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="it" style="min-height: -webkit-fill-available;">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div class="home">
+
+  <div class="sidebar">
+    <h1>DALL·E 3 Image Generator</h1>
+  </div>
+
+  <div class="centerContent">
+
+    <div class="loginDiv">
+      <app-authentication></app-authentication>
+    </div>
+
+    <div class="inputDiv">
+      <div class="tabs-container">
+        <div class="tabs">
+          <button class="tab" (click)="setActiveTab('manual')" [class.active]="activeTab === 'manual'">Manual Prompt</button>
+          <button class="tab" (click)="setActiveTab('predefined')" [class.active]="activeTab === 'predefined'">Predefined Options</button>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div>
+
+      </div>
+      <form class="input-form">
+        <input type="text" name="inputPrompt" placeholder="Enter a description..." class="input-prompt" id="inputPrompt" [(ngModel)]="inputPrompt" required>
+
+        <div class="select-row">
+          <div class="select-wrapper">
+            <select (change)="setStyle($event)" class="option-select" id="selectedStyle" [(ngModel)]="selectedStyle" name="selectedStyle">
+              <option value="" disabled selected>Select a Style</option>
+              <option value="Real">Real</option>
+              <option value="Oil Painting">🎨 Oil Painting</option>
+              <option value="Watercolor">🖌️ Watercolor</option>
+              <option value="Digital Art">💻 Digital Art</option>
+            </select>
+          </div>
+          <div class="select-wrapper">
+            <select (change)="setMood($event)" class="option-select" id="selectedMood" [(ngModel)]="selectedMood" name="selectedMood">
+              <option value="" disabled selected>Select a Mood</option>
+              <option value="Serene">😌 Serene</option>
+              <option value="Chaotic">🌀 Chaotic</option>
+              <option value="Mystical">🔮 Mystical</option>
+            </select>
+          </div>
+        </div>
+        <button type="button" (click)="handleSubmit()" class="submit-button" id="submitButton">Generate</button>
+      </form>
+    </div>
+
+
+    <div class="selectImageDiv">
+      <h2>Or choose file to upload</h2>
+
+
+      <input id="inputImage" #photoInput type="file" (change)="fileInputChange($event)" accept="image/*" />
+      <div class="save-reset-button-div">
+        <button *ngIf="selectedImage || generatedImage" class="save-button" (click)="saveImage()">Save image</button>
+        <button *ngIf="selectedImage || generatedImage" class="edit-button" (click)="editImage()">Edit image</button>
+        <button *ngIf="selectedImage || generatedImage" class="reset-button" (click)="resetImage()">Reset</button>
+      </div>
+
+      <input id="img1" #photoInput type="file" (change)="fileInputChange1($event)" accept="image/png" />
+      <input id="img2" #photoInput type="file" (change)="fileInputChange2($event)" accept="image/png" />
+      <button (click)="editImageService()">Send edit request</button>
+
+      <!-- Loading Indicator -->
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+
+      <div class="image-container">
+        <img *ngIf="selectedImage" id="selected-image" [src]="getSelectedImageSrc()" alt="Selected Image" />
+      </div>
+
+
+      <div class="popup-image-div" *ngIf="editImageValue">
+        <span (click)="editImage()">&times;</span>
+        <canvas #Canvas></canvas>
+        <img #popupImage id="popup-image-img" [src]="getSelectedImageSrc()"/>
+      </div>
+
+    </div>
+
+
+
+
+    <div>
+      <img *ngIf="generatedImage" id="generated-image" [src]="getGeneratedImage()" alt="Generated Image"/>
+    </div>
+
+
+
+
+  </div>
+</div>
+</body>
+
+</html>
