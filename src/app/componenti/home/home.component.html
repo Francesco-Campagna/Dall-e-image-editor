@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="it" style="min-height: -webkit-fill-available;">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
@@ -19,6 +18,7 @@
       <app-authentication></app-authentication>
     </div>
 
+
     <div class="inputDiv">
       <div class="tabs-container">
         <div class="tabs">
@@ -28,9 +28,7 @@
       </div>
 
       <!-- Form -->
-      <div>
 
-      </div>
       <form class="input-form">
         <input type="text" name="inputPrompt" placeholder="Enter a description..." class="input-prompt" id="inputPrompt" [(ngModel)]="inputPrompt" required>
 
@@ -38,7 +36,7 @@
           <div class="select-wrapper">
             <select (change)="setStyle($event)" class="option-select" id="selectedStyle" [(ngModel)]="selectedStyle" name="selectedStyle">
               <option value="" disabled selected>Select a Style</option>
-              <option value="Real">Real</option>
+              <option value="Realistic">Realistic</option>
               <option value="Oil Painting">🎨 Oil Painting</option>
               <option value="Watercolor">🖌️ Watercolor</option>
               <option value="Digital Art">💻 Digital Art</option>
@@ -47,6 +45,7 @@
           <div class="select-wrapper">
             <select (change)="setMood($event)" class="option-select" id="selectedMood" [(ngModel)]="selectedMood" name="selectedMood">
               <option value="" disabled selected>Select a Mood</option>
+              <option value="Normal">Normal</option>
               <option value="Serene">😌 Serene</option>
               <option value="Chaotic">🌀 Chaotic</option>
               <option value="Mystical">🔮 Mystical</option>
@@ -56,6 +55,7 @@
         <button type="button" (click)="handleSubmit()" class="submit-button" id="submitButton">Generate</button>
       </form>
     </div>
+
 
 
     <div class="selectImageDiv">
@@ -103,4 +103,4 @@
 </div>
 </body>
 
-</html>
+

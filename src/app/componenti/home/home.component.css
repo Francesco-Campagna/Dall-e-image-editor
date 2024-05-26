@@ -35,9 +35,11 @@ body {
 
 .loginDiv{
   position: absolute;
-  top: 0%;
-  right: 0;
+  top: 5px;
+  right: 5px;
 }
+
+
 
 .inputDiv{
   display: inline-grid;
@@ -45,7 +47,6 @@ body {
   height: 25vh;
   width: 410px;
   max-width: 410px;
-  margin-bottom: -30px;
 }
 
 .selectImageDiv{
@@ -64,9 +65,9 @@ body {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   padding: 20px;
+  overflow: auto;
 }
 
 h1, h2 {
@@ -325,7 +326,6 @@ INIZIO PARTE POPUP IMAGE
 FINE PARTE POPUP IMAGE
 
  */
-
 
 
 

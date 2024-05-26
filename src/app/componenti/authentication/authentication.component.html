@@ -1,19 +1,5 @@
 <div class="authentication-container">
-
-  <button mat-icon-button [matMenuTriggerFor]="menu">
-    <mat-icon>more_vert</mat-icon>
+  <button mat-fab class="loginButton" onClick="window.open('http://localhost:4200/login','_self')">
+    <mat-icon>login</mat-icon>
   </button>
-  <mat-menu id="my-mat-menu" #menu="matMenu">
-    <button mat-menu-item onClick="window.open('http://localhost:8080/login','_self')" *ngIf="!this.auth.isLoggedIn">
-      <mat-icon>account_circle</mat-icon>
-      <span>Accedi</span>
-    </button >
-    <button mat-menu-item onClick="window.open('http://localhost:8080/registration','_self')" *ngIf="!this.auth.isLoggedIn">
-      <mat-icon>person_add</mat-icon>
-      <span>Registrati</span>
-    </button>
-  </mat-menu>
-
-
-
 </div>
