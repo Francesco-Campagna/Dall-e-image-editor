@@ -14,6 +14,8 @@ import {FormsModule} from "@angular/forms";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import {ImageSelectorComponent} from "./componenti/image-selector/image-selector.component";
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 
 
@@ -23,6 +25,7 @@ import { MatMenuModule } from '@angular/material/menu';
     AppComponent,
     HomeComponent,
     AuthenticationComponent,
+    ImageSelectorComponent,
   ],
 
     imports: [
@@ -35,7 +38,9 @@ import { MatMenuModule } from '@angular/material/menu';
         MatIconModule,
         MatMenuModule,
     ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync()
+  ],
   bootstrap: [AppComponent]
 
 })

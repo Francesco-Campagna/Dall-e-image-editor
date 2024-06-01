@@ -1,13 +1,14 @@
 import {
-  AfterViewInit,
+  AfterViewInit, ChangeDetectorRef,
   Component,
-  ElementRef,
+  ElementRef, Input,
   ViewChild
 } from '@angular/core';
 import OpenAI from "openai";
 import {ServiceService} from "../../Service/service";
 import { environment } from '../../../../config';
 import {DataUrl, NgxImageCompressService} from "ngx-image-compress";
+
 
 
 
@@ -19,62 +20,28 @@ import {DataUrl, NgxImageCompressService} from "ngx-image-compress";
 })
 export class HomeComponent implements AfterViewInit{
   @ViewChild('photoInput') myInputPhoto!: ElementRef;
-  @ViewChild('myCanvas') myCanvas!: ElementRef;
 
+
+
+  ngAfterViewInit() {
+  }
 
   apiKey = environment.apiKey;
-
-
 
 
   private openai = new OpenAI({
     apiKey: this.apiKey,
     dangerouslyAllowBrowser: true
-    })
+  })
 
 
   constructor(private service:ServiceService, private compressImage: NgxImageCompressService) {
   }
 
 
+
   forest: any;
   forestMask: any;
-  ngAfterViewInit() {
-    /*
-    this.service.getImageById("7").subscribe({
-      next: (img) =>{
-        this.compressImage
-          .compressFile(<DataUrl>img.link, -1, 50, 50) // 50% ratio, 50% quality
-          .then(compressedImage => {
-            this.generatedImage = compressedImage;
-          })
-      }
-    })
-
-     */
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -121,21 +88,24 @@ export class HomeComponent implements AfterViewInit{
   }
 
 
-  // Function to handle form submission
   async handleSubmit() {
-    console.log(this.selectedStyle);
-    console.log(this.selectedMood);
+    //console.log(this.selectedStyle);
+    //console.log(this.selectedMood);
 
-    if(this.selectedStyle == "" || this.selectedMood == "" || this.inputPrompt == ""){
-      return;
+    if(this.inputPrompt == ""){
+      alert("You must provide a prompt");
     }
 
     this.setIsLoading(true);
 
+    let combinedPrompt: string = `${this.inputPrompt}`;
 
-    const combinedPrompt: string = `${this.inputPrompt}, Style: ${this.selectedStyle}, Mood: ${this.selectedMood}`;
-    console.log(combinedPrompt);
-
+    if(this.selectedStyle){
+      combinedPrompt = `${combinedPrompt}, Style: ${this.selectedStyle}`;
+    }
+    if(this.selectedMood){
+      combinedPrompt = `${combinedPrompt}, Mood: ${this.selectedMood}`;
+    }
 
     if(this.openai == undefined){
       console.error('OpenAI non è disponibile lato server.');
@@ -155,13 +125,15 @@ export class HomeComponent implements AfterViewInit{
 
       this.selectedImage = undefined;
       this.generatedImage = responseData;
-      this.setIsLoading(false);
 
     } catch (error) {
       console.error("Error generating the image:", error);
       alert(
         "Failed to generate the image. Check the console for more details."
       );
+    }
+    finally {
+      this.setIsLoading(false);
     }
   }
 
@@ -171,22 +143,12 @@ export class HomeComponent implements AfterViewInit{
 
 
   async editImageService(){
-    this.service.getImageById("9").subscribe({
-      next: (image) => {
-        this.compressImage
-          .compressFile(<string>image.link, -1, 100, 50) // 50% ratio, 50% quality
-          .then(compressedImage => {
-            this.generatedImage = compressedImage;
-          })
-      }
-    })
-    return;
-
-
+    if (this.isLoading) return;
     this.setIsLoading(true);
 
     console.log("PASSO: " +this.forest);
     console.log("PASSO: " +this.forestMask);
+
 
     try {
 
@@ -194,7 +156,7 @@ export class HomeComponent implements AfterViewInit{
         model: "dall-e-2",
         image: this.forest,
         mask: this.forestMask,
-        prompt: "a forest with a gorilla",
+        prompt: this.inputPrompt,
         n: 1,
         size: "512x512",
       });
@@ -203,7 +165,6 @@ export class HomeComponent implements AfterViewInit{
 
       this.selectedImage = undefined;
       this.generatedImage = responseData;
-      this.setIsLoading(false);
 
     } catch (error) {
       console.error("Error generating the image:", error);
@@ -211,7 +172,9 @@ export class HomeComponent implements AfterViewInit{
         "Failed to generate the image. Check the console for more details."
       );
     }
-
+    finally {
+      this.setIsLoading(false);
+    }
   }
 
 
@@ -229,24 +192,33 @@ export class HomeComponent implements AfterViewInit{
     }
   }
 
-  fileInputChange1(event: any): void {
+
+
+  async fileInputChange1(event: any): Promise<void> {
     const files = event.target.files;
     if (files && files.length > 0) {
-      this.forest = files[0];
-      console.log(this.forest);
-      console.log(this.forest.size / (1024 * 1024));
-      this.generatedImage = undefined;
+      const imageFile = files[0];
+      try {
+        this.forest = imageFile;
+        console.log("Image processed successfully");
+      } catch (error) {
+        console.error("Error processing image:", error);
+      }
     }
   }
 
-  fileInputChange2(event: any): void {
+
+
+  async fileInputChange2(event: any): Promise<void> {
     const files = event.target.files;
     if (files && files.length > 0) {
-      this.forestMask = files[0];
-      console.log(this.forestMask);
-      console.log(this.forestMask.size / (1024 * 1024));
-      this.generatedImage = undefined;
-
+      const imageFile = files[0];
+      try {
+        this.forestMask = imageFile;
+        console.log("Image processed successfully");
+      } catch (error) {
+        console.error("Error processing image:", error);
+      }
     }
   }
 
@@ -284,27 +256,14 @@ export class HomeComponent implements AfterViewInit{
 
   editImage(){
     this.editImageSelected();
-
-
-
-    /*
-    const canvasElement = document.getElementById("myCanvas") as HTMLCanvasElement;
-    const rect = canvasElement.getBoundingClientRect();
-    this.offsetX = rect.left;
-    this.offsetY = rect.top;
-
-    // Aggiungi eventi per il canvas
-    canvasElement.addEventListener('mousedown', (e) => this.handleMouseDown(e));
-    canvasElement.addEventListener('mousemove', (e) => this.handleMouseMove(e));
-    canvasElement.addEventListener('mouseup', (e) => this.handleMouseUp(e));
-    canvasElement.addEventListener('mouseout', (e) => this.handleMouseOut(e));
-
-     */
   }
+
 
   editImageSelected(){
     this.editImageValue = !this.editImageValue;
   }
+
+
 
   closePopup(){}
 
@@ -348,9 +307,4 @@ export class HomeComponent implements AfterViewInit{
   setIsLoading(value: boolean): void {
     this.isLoading = value;
   }
-
-
-
-
-
 }

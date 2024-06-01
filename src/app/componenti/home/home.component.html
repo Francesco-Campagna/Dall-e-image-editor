@@ -8,15 +8,13 @@
 <body>
 <div class="home">
 
+
   <div class="sidebar">
     <h1>DALL·E 3 Image Generator</h1>
   </div>
 
   <div class="centerContent">
 
-    <div class="loginDiv">
-      <app-authentication></app-authentication>
-    </div>
 
 
     <div class="inputDiv">
@@ -74,7 +72,11 @@
       <button (click)="editImageService()">Send edit request</button>
 
       <!-- Loading Indicator -->
-      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <div class="spinnerDiv" *ngIf="isLoading">
+        <mat-spinner></mat-spinner>
+        <p>Loading...</p>
+      </div>
+
 
       <div class="image-container">
         <img *ngIf="selectedImage" id="selected-image" [src]="getSelectedImageSrc()" alt="Selected Image" />
@@ -83,7 +85,6 @@
 
       <div class="popup-image-div" *ngIf="editImageValue">
         <span (click)="editImage()">&times;</span>
-        <canvas #Canvas></canvas>
         <img #popupImage id="popup-image-img" [src]="getSelectedImageSrc()"/>
       </div>
 
@@ -95,12 +96,14 @@
     <div>
       <img *ngIf="generatedImage" id="generated-image" [src]="getGeneratedImage()" alt="Generated Image"/>
     </div>
-
-
-
-
   </div>
+
+  <div class="loginDiv">
+    <app-authentication></app-authentication>
+  </div>
+
 </div>
 </body>
+
 
 

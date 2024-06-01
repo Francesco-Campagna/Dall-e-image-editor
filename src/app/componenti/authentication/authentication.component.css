@@ -1,18 +1,18 @@
-.authentication-container {
-  background-color: #212121;
-  top: 0;
-  right: 0;
-}
-
 .loginButton {
-  cursor: pointer;
-  background-color: #171717;
+  background-color: transparent;
   color: white;
-  border-radius: 40px;
-  font-size: 20px;
-  padding: 10px;
+  border: none;
+  background-size: 50px;
+  cursor: pointer;
+  font-size: 30px;
+  padding: 0;
+  width: 30px;
+  height: 30px;
 }
 
+.loginButton:hover {
+  color: #007bff;
+}
 
 
 

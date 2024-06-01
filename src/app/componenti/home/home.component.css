@@ -34,9 +34,7 @@ body {
 }
 
 .loginDiv{
-  position: absolute;
-  top: 5px;
-  right: 5px;
+  padding: 10px;
 }
 
 
@@ -67,6 +65,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  padding-right: 0;
   overflow: auto;
 }
 
@@ -327,11 +326,13 @@ FINE PARTE POPUP IMAGE
 
  */
 
+/* SPINNER */
+.spinnerDiv {
+  justify-self: center;
+  padding: 50px;
+  text-align: center;
+}
 
-
-
-
-
-
-
-
+.spinnerDiv p{
+  color: white;
+}

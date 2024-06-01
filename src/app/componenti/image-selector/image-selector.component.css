@@ -1,0 +1,66 @@
+.image-container {
+  position: relative;
+  display: inline-block;
+  margin: 100px;
+  overflow-y: auto;
+}
+
+.image {
+  display: block;
+  user-select: none; /* Prevent text selection */
+  width: auto;
+  max-width: 1024px;
+  max-height: 1024px;
+}
+
+.selection {
+  position: absolute;
+  border: 2px dashed #000;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+
+}
+
+.active-selection {
+  border-color: #00f; /* Different color for active selection */
+}
+
+.delete-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  z-index: 20;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.delete-popup p {
+  font-size: 16px;
+  color: #333;
+}
+
+.delete-popup button {
+  margin-top: 5px;
+  padding: 8px 16px;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.cancelButton {
+  background-color: red;
+}
+
+.confirmButton {
+  background-color: #33cc33;
+}
+
+
+
+
