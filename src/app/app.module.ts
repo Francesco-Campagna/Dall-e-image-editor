@@ -16,6 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import {ImageSelectorComponent} from "./componenti/image-selector/image-selector.component";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import {AccessComponent} from "./componenti/access/access.component";
 
 
 
@@ -26,6 +27,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     HomeComponent,
     AuthenticationComponent,
     ImageSelectorComponent,
+    AccessComponent,
   ],
 
     imports: [

@@ -1,0 +1,63 @@
+.container {
+  display: flex;
+  height: 100vh; /* Imposta l'altezza della container come l'altezza della finestra del browser */
+}
+
+.left {
+  flex: 3; /* Utilizza il 75% dello spazio disponibile nel container */flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  background-color: #171717;
+  padding-bottom: 20px;
+}
+
+.left img{
+  max-width: 90%; /* Imposta la larghezza massima dell'immagine al 100% del div */
+  max-height: 90%; /* Imposta l'altezza massima dell'immagine al 100% del div */
+  height: auto;
+}
+
+.left p {
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: white; /* Colore del testo */
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 123, 255, 1); /* Ombra del testo */
+}
+
+.right {
+  flex: 1; /* Utilizza il restante 25% dello spazio disponibile nel container */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #212121;
+  color: white;
+}
+
+.right h1 {
+  font-size: 30px;
+  margin: 10px;
+}
+
+.button {
+  background-color: #007bff; /* Colore di sfondo del pulsante */
+  color: white; /* Colore del testo del pulsante */
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+  width: 110px;
+}
+
+
+.button:hover {
+  background-color: #0056b3;
+  cursor: pointer;
+}
