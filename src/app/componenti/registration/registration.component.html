@@ -1,1 +1,27 @@
-<p>registration works!</p>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <title>Sign up!</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="container">
+  <div>
+    <h2>Sign up</h2>
+  </div>
+  <form class="form">
+    <input type="text" id="name" name="name" placeholder="Name" required>
+    <input type="text" id="surname" name="surname" placeholder="Surname" required>
+    <input type="email" id="email" name="email" placeholder="Email address" required>
+    <input type="tel" id="phone" name="phone" placeholder="Phone" required>
+    <input type="password" id="password" name="password" placeholder="Password" required>
+    <button *ngIf="!registrationSuccess" type="submit" (click)="checkRegistration()">Sign up</button>
+    <button *ngIf="!registrationSuccess" type="button" onclick="window.location.href='http://localhost:4200/home';">Back to access page</button>
+    <div id="messageContainer" class="message hidden"></div>
+    <button *ngIf="registrationSuccess" class="hidden" id="loginButton" type="button" onclick="window.location.href='http://localhost:4200/login';">Log in</button>
+  </form>
+
+</div>
+</body>
+</html>
