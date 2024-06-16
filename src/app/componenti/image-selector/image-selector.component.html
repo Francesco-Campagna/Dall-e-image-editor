@@ -1,6 +1,6 @@
 <body>
 <div class="image-container">
-  <img src="assets/gatto.png" alt="Image" class="image"
+  <img [src]="this.image" alt="Image" class="image"
        (mousedown)="startSelection($event)"
        (mousemove)="drawSelection($event)"
        (mouseup)="endSelection()"
@@ -11,7 +11,7 @@
        [ngStyle]="selection"
   >
   </div>
-  <div class="selection active-selection" *ngIf="isSelecting" [ngStyle]="selectionStyles"></div>
+  <div class="selection active-selection" *ngIf="isSelecting" [ngStyle]="coordinates"></div>
   <div class="delete-popup" *ngIf="showPopup">
     <p>Do you want to confirm this selection?</p>
     <button class="confirmButton" (click)="closePopup()">Yes</button>

@@ -66,7 +66,7 @@ body {
   align-items: center;
   padding: 20px;
   padding-right: 0;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 h1, h2 {
@@ -336,3 +336,34 @@ FINE PARTE POPUP IMAGE
 .spinnerDiv p{
   color: white;
 }
+
+
+/* INIZIO CHAT */
+
+.chat-div {
+  max-height: var(--chat-max-height);/* Altezza massima della chat-div, calcolata sottraendo l'altezza del titolo */
+  overflow-y: auto; /* Abilita lo scroll verticale solo quando necessario */
+}
+
+/* Stili per la barra di scorrimento */
+.chat-div::-webkit-scrollbar {
+  width: 8px; /* Larghezza della barra di scorrimento */
+}
+
+.chat-div::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Colore di sfondo della traccia della barra di scorrimento */
+  border-radius: 5px; /* Arrotondamento dei bordi della traccia */
+}
+
+.chat-div::-webkit-scrollbar-thumb {
+  background-color: #888; /* Colore del pollice della barra di scorrimento */
+  border-radius: 5px; /* Arrotondamento dei bordi del pollice */
+}
+
+.chat-div::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Cambia colore del pollice al passaggio del mouse */
+}
+
+
+
+/* FINE CHAT */

@@ -10,7 +10,12 @@
 
 
   <div class="sidebar">
-    <h1>DALL·E 3 Image Generator</h1>
+    <div>
+      <h1>DALL·E 3 Image Generator</h1>
+    </div>
+    <div class="chat-div">
+      <app-chat></app-chat>
+    </div>
   </div>
 
   <div class="centerContent">
@@ -60,16 +65,16 @@
       <h2>Or choose file to upload</h2>
 
 
-      <input id="inputImage" #photoInput type="file" (change)="fileInputChange($event)" accept="image/*" />
+      <input id="inputImage" #photoInput type="file" (change)="fileInputChange($event)" accept="image/*"/>
       <div class="save-reset-button-div">
         <button *ngIf="selectedImage || generatedImage" class="save-button" (click)="saveImage()">Save image</button>
         <button *ngIf="selectedImage || generatedImage" class="edit-button" (click)="editImage()">Edit image</button>
         <button *ngIf="selectedImage || generatedImage" class="reset-button" (click)="resetImage()">Reset</button>
       </div>
 
-      <input id="img1" #photoInput type="file" (change)="fileInputChange1($event)" accept="image/png" />
-      <input id="img2" #photoInput type="file" (change)="fileInputChange2($event)" accept="image/png" />
       <button (click)="editImageService()">Send edit request</button>
+
+
 
       <!-- Loading Indicator -->
       <div class="spinnerDiv" *ngIf="isLoading">
@@ -79,23 +84,18 @@
 
 
       <div class="image-container">
-        <img *ngIf="selectedImage" id="selected-image" [src]="getSelectedImageSrc()" alt="Selected Image" />
+        <img *ngIf="selectedImage && !editImageValue" id="selected-image" [src]="getSelectedImageSrc()" alt="Selected Image" />
       </div>
-
-
-      <div class="popup-image-div" *ngIf="editImageValue">
-        <span (click)="editImage()">&times;</span>
-        <img #popupImage id="popup-image-img" [src]="getSelectedImageSrc()"/>
-      </div>
-
     </div>
-
 
 
 
     <div>
-      <img *ngIf="generatedImage" id="generated-image" [src]="getGeneratedImage()" alt="Generated Image"/>
+      <img *ngIf="generatedImage && !editImageValue" id="generated-image" [src]="getGeneratedImage()" alt="Generated Image"/>
     </div>
+
+    <app-image-selector *ngIf="editImageValue"></app-image-selector>
+
   </div>
 
   <div class="loginDiv">

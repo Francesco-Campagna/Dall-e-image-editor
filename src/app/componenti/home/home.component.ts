@@ -1,13 +1,15 @@
 import {
   AfterViewInit, ChangeDetectorRef,
   Component,
-  ElementRef, Input,
+  ElementRef, Input, OnInit,
   ViewChild
 } from '@angular/core';
 import OpenAI from "openai";
 import {ServiceService} from "../../Service/service";
 import { environment } from '../../../../config';
 import {DataUrl, NgxImageCompressService} from "ngx-image-compress";
+import {ImageService} from "../../Service/imageService";
+import {Observable} from "rxjs";
 
 
 
@@ -19,11 +21,27 @@ import {DataUrl, NgxImageCompressService} from "ngx-image-compress";
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements AfterViewInit{
-  @ViewChild('photoInput') myInputPhoto!: ElementRef;
+  //@ViewChild('photoInput') myInputPhoto!: ElementRef;
 
-
+  private resizeObserver: ResizeObserver | null = null;
 
   ngAfterViewInit() {
+    //this.generatedImage = this.imageService.getGeneratedImage();
+
+    const targetElement = this.elementRef.nativeElement.querySelector('.sidebar');
+
+    this.resizeObserver = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        // Verifica solo le modifiche di altezza
+        if (entry.contentRect.height !== entry.contentRect.width) {
+          console.log('Altezza dell\'elemento è cambiata:', entry.contentRect.height);
+          // Esegui qui le azioni desiderate in risposta al cambiamento di altezza
+          this.updateChatMaxHeight();
+        }
+      }
+    });
+
+    this.resizeObserver.observe(targetElement);
   }
 
   apiKey = environment.apiKey;
@@ -35,7 +53,7 @@ export class HomeComponent implements AfterViewInit{
   })
 
 
-  constructor(private service:ServiceService, private compressImage: NgxImageCompressService) {
+  constructor(private service:ServiceService, private compressImage: NgxImageCompressService, private imageService:ImageService, private cdr: ChangeDetectorRef, private elementRef: ElementRef) {
   }
 
 
@@ -125,6 +143,8 @@ export class HomeComponent implements AfterViewInit{
 
       this.selectedImage = undefined;
       this.generatedImage = responseData;
+      this.imageService.generateRequest(responseData);
+      this.cdr.detectChanges();
 
     } catch (error) {
       console.error("Error generating the image:", error);
@@ -142,8 +162,10 @@ export class HomeComponent implements AfterViewInit{
 
 
 
-  async editImageService(){
+  async callToEditOpenAi(image: any, mask: any){
     if (this.isLoading) return;
+    this.generatedImage = null;
+    this.selectedImage = null;
     this.setIsLoading(true);
 
     console.log("PASSO: " +this.forest);
@@ -154,8 +176,8 @@ export class HomeComponent implements AfterViewInit{
 
       const response = await this.openai.images.edit({
         model: "dall-e-2",
-        image: this.forest,
-        mask: this.forestMask,
+        image: image,
+        mask: mask,
         prompt: this.inputPrompt,
         n: 1,
         size: "512x512",
@@ -165,6 +187,8 @@ export class HomeComponent implements AfterViewInit{
 
       this.selectedImage = undefined;
       this.generatedImage = responseData;
+      this.imageService.generateRequest(responseData);
+      this.cdr.detectChanges();
 
     } catch (error) {
       console.error("Error generating the image:", error);
@@ -175,6 +199,13 @@ export class HomeComponent implements AfterViewInit{
     finally {
       this.setIsLoading(false);
     }
+  }
+
+
+  editImageService() {
+    let image = this.imageService.getImageForApiEditRequest();
+    let mask = this.imageService.getMask();
+    this.callToEditOpenAi(image, mask);
   }
 
 
@@ -189,50 +220,28 @@ export class HomeComponent implements AfterViewInit{
       this.selectedImage = files[0];
       console.log(this.selectedImage);
       this.generatedImage = undefined;
+      this.imageService.setSelectedImage(files[0]);
+      this.cdr.detectChanges();
     }
   }
 
 
-
-  async fileInputChange1(event: any): Promise<void> {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      const imageFile = files[0];
-      try {
-        this.forest = imageFile;
-        console.log("Image processed successfully");
-      } catch (error) {
-        console.error("Error processing image:", error);
-      }
-    }
-  }
-
-
-
-  async fileInputChange2(event: any): Promise<void> {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      const imageFile = files[0];
-      try {
-        this.forestMask = imageFile;
-        console.log("Image processed successfully");
-      } catch (error) {
-        console.error("Error processing image:", error);
-      }
-    }
-  }
 
   resetImage(): void {
+    if(this.editImageValue){
+      alert("Terminare l'edit dell'immagine prima del reset");
+      return;
+    }
     this.selectedImage = null;
     this.generatedImage = null;
-    this.myInputPhoto.nativeElement.value = "";
+    this.imageService.resetImage();
   }
 
   saveImage(): void {
     if (this.selectedImage) {
-      this.save(this.selectedImage);
+      return;
     }else if(this.generatedImage){
-      this.saveGenerated(this.generatedImage);
+      this.saveGenerated();
     }
   }
 
@@ -243,32 +252,26 @@ export class HomeComponent implements AfterViewInit{
     link.click();
   }
 
-  saveGenerated(image: any) {
-    this.service.saveImage({
-      id: 0,
-      link: image,
-    }).subscribe();
+  saveGenerated() {
+    const imageData = { link: this.generatedImage, chatTitle: this.inputPrompt, userId: 1 };
+    this.service.saveImage(imageData).subscribe(
+      response => {
+        console.log('Immagine salvata con successo:', response);
+      },
+      error => {
+        console.error('Errore durante il salvataggio dell\'immagine:', error);
+      }
+    );
   }
 
 
 
 
 
-  editImage(){
-    this.editImageSelected();
+
+  editImage() {
+    this.editImageValue = this.imageService.editImageChange();
   }
-
-
-  editImageSelected(){
-    this.editImageValue = !this.editImageValue;
-  }
-
-
-
-  closePopup(){}
-
-
-
 
 
 
@@ -277,16 +280,15 @@ export class HomeComponent implements AfterViewInit{
     if (this.selectedImage) {
       return URL.createObjectURL(this.selectedImage);
     }
+    else if(this.generatedImage){
+      return this.generatedImage;
+    }
     return '';
   }
 
 
   getGeneratedImage(): string {
-    return this.generatedImage;
-    if (this.selectedImage) {
-      return URL.createObjectURL(this.generatedImage);
-    }
-    return '';
+    return this.imageService.getGeneratedImage();
   }
 
 
@@ -306,5 +308,18 @@ export class HomeComponent implements AfterViewInit{
   // Function to set isLoading
   setIsLoading(value: boolean): void {
     this.isLoading = value;
+  }
+
+
+
+  updateChatMaxHeight(): void {
+    const sidebar = document.querySelector('.sidebar') as HTMLElement | null;
+
+    if (sidebar !== null) {
+      const homeHeight = sidebar.offsetHeight;
+      document.documentElement.style.setProperty('--chat-max-height', `${homeHeight - 114}px`);
+    } else {
+      console.error('Elemento .home non trovato.');
+    }
   }
 }

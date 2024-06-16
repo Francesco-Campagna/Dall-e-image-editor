@@ -1,4 +1,4 @@
 export class Image {
   id!: number;
-  link!: string | undefined;
+  data!: string | undefined;
 }

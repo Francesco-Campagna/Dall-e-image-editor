@@ -19,6 +19,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import {AccessComponent} from "./componenti/access/access.component";
 import {LoginComponent} from "./componenti/login/login.component";
 import {RegistrationComponent} from "./componenti/registration/registration.component";
+import {ChatComponent} from "./componenti/chat/chat.component";
 
 
 
@@ -32,6 +33,7 @@ import {RegistrationComponent} from "./componenti/registration/registration.comp
     AccessComponent,
     LoginComponent,
     RegistrationComponent,
+    ChatComponent,
   ],
 
     imports: [

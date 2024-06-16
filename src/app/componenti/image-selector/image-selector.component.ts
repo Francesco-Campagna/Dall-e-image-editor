@@ -1,14 +1,18 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ImageService} from "../../Service/imageService";
+import {Coordinates} from "../../Model/Coordinates";
 
 @Component({
   selector: 'app-image-selector',
   templateUrl: './image-selector.component.html',
   styleUrls: ['./image-selector.component.css']
 })
-export class ImageSelectorComponent {
+export class ImageSelectorComponent implements OnInit{
+
+  image: any = null;
 
   isSelecting = false;
-  selectionStyles = {};
+  coordinates: Coordinates | undefined;
   startX = 0;
   startY = 0;
   currentX = 0;
@@ -16,6 +20,16 @@ export class ImageSelectorComponent {
   selections: any[] = [];
   showPopup = false;
   isEndSelection = false;
+
+
+  ngOnInit(): void {
+    this.image = this.imageService.getImageForEdit();
+    this.imageService.resetEditImageConfirmed();
+  }
+
+  constructor(private imageService:ImageService) {
+  }
+
 
   startSelection(event: MouseEvent) {
     if(this.selections.length != 0) return;
@@ -26,22 +40,21 @@ export class ImageSelectorComponent {
     this.startY = event.offsetY;
     this.currentX = this.startX;
     this.currentY = this.startY;
-    this.updateSelectionStyles();
+    this.updatecoordinates();
   }
 
   drawSelection(event: MouseEvent) {
     if (!this.isSelecting) return;
     this.currentX = event.offsetX;
     this.currentY = event.offsetY;
-    this.updateSelectionStyles();
+    this.updatecoordinates();
   }
 
   endSelection() {
     if (!this.isSelecting) return;
     this.isEndSelection = true;
     this.isSelecting = false;
-    this.selections.push({ ...this.selectionStyles });
-    this.selectionStyles = {};
+    this.selections.push({ ...this.coordinates });
     this.startX = 0;
     this.startY = 0;
     this.currentX = 0;
@@ -49,15 +62,19 @@ export class ImageSelectorComponent {
     this.showDeletePopup();
   }
 
-  updateSelectionStyles() {
+  updatecoordinates() {
     const width = this.currentX - this.startX;
     const height = this.currentY - this.startY;
-    this.selectionStyles = {
+    this.coordinates = {
       left: `${Math.min(this.startX, this.currentX)}px`,
       top: `${Math.min(this.startY, this.currentY)}px`,
       width: `${Math.abs(width)}px`,
       height: `${Math.abs(height)}px`
     };
+  }
+
+  resetCoordinates(){
+    this.coordinates = undefined;
   }
 
   showDeletePopup() {
@@ -67,15 +84,21 @@ export class ImageSelectorComponent {
   closePopup() {
     this.showPopup = false;
     this.printCoordinates();
+    this.imageService.editImageChange();
+    if(this.selections.length > 0) {
+      console.log("ciao");
+      this.imageService.confirmSelection(this.coordinates);
+    }
   }
 
   deleteSelection() {
-      this.selections = [];
-      this.closePopup();
+    this.selections = [];
+    this.resetCoordinates();
+    this.closePopup();
   }
 
   printCoordinates(){
-    console.log(this.selections);
+    console.log("coordinate: " +this.coordinates);
   }
 
 }

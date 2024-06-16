@@ -1,16 +1,17 @@
 .image-container {
   position: relative;
   display: inline-block;
-  margin: 100px;
+  margin-top: 10px;
   overflow-y: auto;
 }
 
 .image {
   display: block;
   user-select: none; /* Prevent text selection */
-  width: auto;
-  max-width: 1024px;
-  max-height: 1024px;
+  height: auto;
+  max-width: 100%;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .selection {
