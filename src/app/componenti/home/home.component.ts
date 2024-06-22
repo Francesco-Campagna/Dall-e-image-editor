@@ -1,15 +1,13 @@
 import {
-  AfterViewInit, ChangeDetectorRef,
+  AfterViewInit,
   Component,
-  ElementRef, Input, OnInit,
-  ViewChild
+  ElementRef,
 } from '@angular/core';
 import OpenAI from "openai";
 import {ServiceService} from "../../Service/service";
 import { environment } from '../../../../config';
-import {DataUrl, NgxImageCompressService} from "ngx-image-compress";
 import {ImageService} from "../../Service/imageService";
-import {Observable} from "rxjs";
+import {Chat} from "../../Model/Chat";
 
 
 
@@ -21,27 +19,33 @@ import {Observable} from "rxjs";
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements AfterViewInit{
-  //@ViewChild('photoInput') myInputPhoto!: ElementRef;
 
   private resizeObserver: ResizeObserver | null = null;
 
   ngAfterViewInit() {
-    //this.generatedImage = this.imageService.getGeneratedImage();
+    this.selectedImage = this.imageService.getSelectedImage();
+    this.generatedImage = this.imageService.getGeneratedImage();
 
     const targetElement = this.elementRef.nativeElement.querySelector('.sidebar');
 
     this.resizeObserver = new ResizeObserver(entries => {
       for (let entry of entries) {
-        // Verifica solo le modifiche di altezza
         if (entry.contentRect.height !== entry.contentRect.width) {
           console.log('Altezza dell\'elemento è cambiata:', entry.contentRect.height);
-          // Esegui qui le azioni desiderate in risposta al cambiamento di altezza
           this.updateChatMaxHeight();
         }
       }
     });
 
     this.resizeObserver.observe(targetElement);
+
+
+    //Load chat
+    this.imageService.getChatHistory().subscribe({
+      next: (chat) => {
+        this.chats = chat;
+      }
+    });
   }
 
   apiKey = environment.apiKey;
@@ -53,13 +57,9 @@ export class HomeComponent implements AfterViewInit{
   })
 
 
-  constructor(private service:ServiceService, private compressImage: NgxImageCompressService, private imageService:ImageService, private cdr: ChangeDetectorRef, private elementRef: ElementRef) {
+  constructor(private service:ServiceService, private imageService:ImageService, private elementRef: ElementRef) {
   }
 
-
-
-  forest: any;
-  forestMask: any;
 
 
 
@@ -76,6 +76,8 @@ export class HomeComponent implements AfterViewInit{
   selectedImage: any = null;
   generatedImage: any = null;
   editImageValue: boolean = false;
+  chats : Chat[] = [];
+
 
 
 
@@ -106,14 +108,7 @@ export class HomeComponent implements AfterViewInit{
   }
 
 
-  async handleSubmit() {
-    //console.log(this.selectedStyle);
-    //console.log(this.selectedMood);
-
-    if(this.inputPrompt == ""){
-      alert("You must provide a prompt");
-    }
-
+  async callToGenerateOpenAi() {
     this.setIsLoading(true);
 
     let combinedPrompt: string = `${this.inputPrompt}`;
@@ -143,8 +138,9 @@ export class HomeComponent implements AfterViewInit{
 
       this.selectedImage = undefined;
       this.generatedImage = responseData;
-      this.imageService.generateRequest(responseData);
-      this.cdr.detectChanges();
+      this.imageService.generateRequest(responseData, this.inputPrompt);
+      this.saveGenerated();
+
 
     } catch (error) {
       console.error("Error generating the image:", error);
@@ -168,9 +164,8 @@ export class HomeComponent implements AfterViewInit{
     this.selectedImage = null;
     this.setIsLoading(true);
 
-    console.log("PASSO: " +this.forest);
-    console.log("PASSO: " +this.forestMask);
-
+    console.log("PASSO: " + image);
+    console.log("PASSO: " + mask);
 
     try {
 
@@ -187,8 +182,8 @@ export class HomeComponent implements AfterViewInit{
 
       this.selectedImage = undefined;
       this.generatedImage = responseData;
-      this.imageService.generateRequest(responseData);
-      this.cdr.detectChanges();
+      this.imageService.generateRequest(responseData, this.inputPrompt);
+      this.saveGenerated();
 
     } catch (error) {
       console.error("Error generating the image:", error);
@@ -202,10 +197,20 @@ export class HomeComponent implements AfterViewInit{
   }
 
 
-  editImageService() {
-    let image = this.imageService.getImageForApiEditRequest();
-    let mask = this.imageService.getMask();
-    this.callToEditOpenAi(image, mask);
+  handleSubmit() {
+    if(this.inputPrompt == ""){
+      alert("You must provide a prompt");
+      return;
+    }
+    if (!this.editImageValue){
+      this.callToGenerateOpenAi()
+    }else{
+      let image = this.imageService.getImageForApiEditRequest();
+      let mask = this.imageService.getMask();
+      this.imageService.resetImage();
+      this.callToEditOpenAi(image, mask);
+      this.editImageValue = this.imageService.editImageChange();
+    }
   }
 
 
@@ -217,11 +222,10 @@ export class HomeComponent implements AfterViewInit{
   fileInputChange(event: any): void {
     const files = event.target.files;
     if (files && files.length > 0) {
-      this.selectedImage = files[0];
+      this.selectedImage = URL.createObjectURL(files[0]);
       console.log(this.selectedImage);
       this.generatedImage = undefined;
       this.imageService.setSelectedImage(files[0]);
-      this.cdr.detectChanges();
     }
   }
 
@@ -235,21 +239,23 @@ export class HomeComponent implements AfterViewInit{
     this.selectedImage = null;
     this.generatedImage = null;
     this.imageService.resetImage();
+    window.location.reload();
   }
 
   saveImage(): void {
-    if (this.selectedImage) {
-      return;
-    }else if(this.generatedImage){
-      this.saveGenerated();
-    }
+    this.save(this.imageService.getImageForDownload());
   }
 
   save(image: any){
+    if(image == null) return
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(image);
+    const url = URL.createObjectURL(image);
+    link.href = url;
     link.download = image.name;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   saveGenerated() {
@@ -276,22 +282,6 @@ export class HomeComponent implements AfterViewInit{
 
 
 
-  getSelectedImageSrc(): string {
-    if (this.selectedImage) {
-      return URL.createObjectURL(this.selectedImage);
-    }
-    else if(this.generatedImage){
-      return this.generatedImage;
-    }
-    return '';
-  }
-
-
-  getGeneratedImage(): string {
-    return this.imageService.getGeneratedImage();
-  }
-
-
 
 
 
@@ -316,10 +306,17 @@ export class HomeComponent implements AfterViewInit{
     const sidebar = document.querySelector('.sidebar') as HTMLElement | null;
 
     if (sidebar !== null) {
-      const homeHeight = sidebar.offsetHeight;
-      document.documentElement.style.setProperty('--chat-max-height', `${homeHeight - 114}px`);
+      const sidebarHeight = sidebar.offsetHeight;
+      document.documentElement.style.setProperty('--chat-max-height', `${sidebarHeight - 114}px`);
     } else {
       console.error('Elemento .home non trovato.');
     }
+  }
+
+
+  onChatClick(chat: Chat) {
+    let imgFile = this.imageService.convertPngStringToFile(chat.imageData, chat.title);
+    this.imageService.setSelectedImage(imgFile);
+    this.selectedImage = URL.createObjectURL(imgFile);
   }
 }

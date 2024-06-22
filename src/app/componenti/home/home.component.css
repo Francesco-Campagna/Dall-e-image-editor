@@ -366,4 +366,47 @@ FINE PARTE POPUP IMAGE
 
 
 
+.chat-card {
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  margin: 0 10px 10px 10px;
+  padding: 10px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s;
+  color: #fff;
+}
+
+.chat-card:hover {
+  background-color: #444;
+  cursor: pointer;
+}
+
+.chat-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.chat-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Assicurarsi che occupi tutto lo spazio rimanente */
+  min-width: 0; /* Impedisce al contenitore flessibile di essere troppo largo */
+}
+
+.chat-info h3 {
+  margin: 0;
+  font-size: 1.1em;
+  color: #ddd;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Numero massimo di righe prima del troncamento */
+  overflow: hidden; /* Nasconde il testo che esce dai limiti della card */
+}
+
+
+
 /* FINE CHAT */

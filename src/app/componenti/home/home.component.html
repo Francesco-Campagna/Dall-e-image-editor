@@ -14,7 +14,13 @@
       <h1>DALL·E 3 Image Generator</h1>
     </div>
     <div class="chat-div">
-      <app-chat></app-chat>
+      <div *ngFor="let chat of chats" class="chat-card" (click)="onChatClick(chat)">
+        <img [src]="chat.imageData" alt="Chat Image" class="chat-image">
+        <div class="chat-info">
+          <h3>{{ chat.title }}</h3>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -72,7 +78,6 @@
         <button *ngIf="selectedImage || generatedImage" class="reset-button" (click)="resetImage()">Reset</button>
       </div>
 
-      <button (click)="editImageService()">Send edit request</button>
 
 
 
@@ -84,14 +89,14 @@
 
 
       <div class="image-container">
-        <img *ngIf="selectedImage && !editImageValue" id="selected-image" [src]="getSelectedImageSrc()" alt="Selected Image" />
+        <img *ngIf="selectedImage && !editImageValue" id="selected-image" [src]="selectedImage" alt="Selected Image" />
       </div>
     </div>
 
 
 
     <div>
-      <img *ngIf="generatedImage && !editImageValue" id="generated-image" [src]="getGeneratedImage()" alt="Generated Image"/>
+      <img *ngIf="generatedImage && !editImageValue" id="generated-image" [src]="generatedImage" alt="Generated Image"/>
     </div>
 
     <app-image-selector *ngIf="editImageValue"></app-image-selector>
