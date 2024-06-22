@@ -12,14 +12,14 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("http://localhost:4200")
-@RequestMapping("/api/image")
+@RequestMapping("/api/chat")
 @RequiredArgsConstructor
 public class ChatController {
 
     private final ChatService c;
 
 
-    @GetMapping("/chat/history/{userId}")
+    @GetMapping("/history/{userId}")
     public ResponseEntity<List<ChatDto>> getChatHistory(@PathVariable Long userId) {
         try {
             List<ChatDto> chatHistory = c.getChatHistoryByUserId(userId);
