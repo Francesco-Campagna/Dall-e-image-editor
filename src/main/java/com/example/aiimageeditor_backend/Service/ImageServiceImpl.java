@@ -6,15 +6,26 @@ import com.example.aiimageeditor_backend.Persistence.DAO.UserDao;
 import com.example.aiimageeditor_backend.Persistence.Entities.Chat;
 import com.example.aiimageeditor_backend.Persistence.Entities.Image;
 import com.example.aiimageeditor_backend.Persistence.Entities.User;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,53 +49,48 @@ public class ImageServiceImpl implements ImageService {
         return imageDao.findById(id);
     }
 
-    @Override
-    public List<Image> getAllImages() {
-        return imageDao.findAll();
-    }
 
     @Override
-    public void deleteImage(Long id) {
-        imageDao.deleteById(id);
-    }
+    public ResponseEntity<byte[]> createMask(MultipartFile image, String top, String left, String width, String height) throws IOException {
+        // Leggi l'immagine dal MultipartFile
+        BufferedImage img = ImageIO.read(image.getInputStream());
 
 
-    @Override
-    public List<Image> findByChatId(Long chatId) {
-        return imageDao.findByChatId(chatId);
-    }
+        if (img != null) {
+            // Converti i parametri in interi
+            int topInt = convertPixelStringToInt(top);
+            int leftInt = convertPixelStringToInt(left);
+            int widthInt = convertPixelStringToInt(width);
+            int heightInt = convertPixelStringToInt(height);
 
-    @Override
-    public Optional<BufferedImage> createMask(BufferedImage image, int top, int left, int width, int height) {
-        try {
-            if (image.getType() != BufferedImage.TYPE_INT_ARGB) {
-                BufferedImage temp = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            // Crea la maschera
+            if (img.getType() != BufferedImage.TYPE_INT_ARGB) {
+                BufferedImage temp = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
                 Graphics2D g2d = temp.createGraphics();
-                g2d.drawImage(image, 0, 0, null);
+                g2d.drawImage(img, 0, 0, null);
                 g2d.dispose();
-                image = temp;
+                img = temp;
             }
 
-            Graphics2D g2d = image.createGraphics();
+            Graphics2D g2d = img.createGraphics();
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setComposite(AlphaComposite.Clear);
-            g2d.fillRect(left, top, width, height);
+            g2d.fillRect(leftInt, topInt, widthInt, heightInt);
             g2d.dispose();
 
-            return Optional.of(image);
+            // Converti l'immagine in un array di byte
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(img, "png", baos);
+            byte[] imageBytes = baos.toByteArray();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Optional.empty();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG);
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @Override
-    public BufferedImage readSelectedImage(MultipartFile selectedImage) throws IOException {
-        return ImageIO.read(selectedImage.getInputStream());
-    }
 
-    @Override
     public int convertPixelStringToInt(String value) {
         Pattern pattern = Pattern.compile("(\\d+)px");
         Matcher matcher = pattern.matcher(value);
@@ -99,7 +105,22 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void saveImageAndCreateChat(String base64Image, String chatTitle, Long userId) {
+    public void saveImageAndCreateChat(String imageData) throws IOException {
+        // ObjectMapper per deserializzare JSON
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(imageData);
+
+        // Recupera i dati dall'oggetto JSON
+        String link = jsonNode.get("link").asText();
+        String chatTitle = jsonNode.get("chatTitle").asText();
+        Long userId = jsonNode.get("userId").asLong();
+
+        // Esegui le operazioni necessarie sul link dell'immagine
+        URL url = new URL(link);
+        byte[] imageBytes = IOUtils.toByteArray(url);
+        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
+
         // Creazione della nuova chat
         Chat chat = new Chat();
         chat.setTitle(chatTitle);
@@ -124,4 +145,37 @@ public class ImageServiceImpl implements ImageService {
         chatDao.save(chat);
 
     }
+
+
+    @Override
+    public ResponseEntity<byte[]> convertGeneratedToFile(Map<String, String> requestBody) {
+        String generatedImage = requestBody.get("generatedImage");
+        String fileName = requestBody.get("fileName");
+        if (fileName == null || fileName.isEmpty()) {
+            fileName = "downloaded-image.png"; // Default file name
+        }
+        try {
+            URL url = new URL(generatedImage);
+            try (BufferedInputStream in = new BufferedInputStream(url.openStream());
+                 ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+                byte[] imageData = out.toByteArray();
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.add(HttpHeaders.CONTENT_TYPE, "image/png");
+                headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+
+                return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
