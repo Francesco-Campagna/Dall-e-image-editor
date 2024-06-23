@@ -1,6 +1,7 @@
 package com.example.aiimageeditor_backend.Controller;
 
 import com.example.aiimageeditor_backend.Persistence.DTO.ChatDto;
+import com.example.aiimageeditor_backend.Persistence.Entities.Chat;
 import com.example.aiimageeditor_backend.Service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,4 +30,5 @@ public class ChatController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 }

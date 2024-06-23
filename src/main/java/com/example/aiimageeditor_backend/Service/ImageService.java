@@ -13,6 +13,7 @@ public interface ImageService {
     ResponseEntity<byte[]> createMask(MultipartFile image, String top, String left, String width, String height) throws IOException;
     void saveImageAndCreateChat(String imageData) throws IOException;
     ResponseEntity<byte[]> convertGeneratedToFile(Map<String, String> requestBody);
+    void deleteById(Long id);
 
 
 

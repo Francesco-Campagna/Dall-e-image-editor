@@ -41,17 +41,12 @@ public class ChatServiceImpl implements ChatService {
         return chatDao.save(chat);
     }
 
-    @Override
-    public void deleteById(Long id) {
-        chatDao.deleteById(id);
-    }
-
 
     public List<ChatDto> getChatHistoryByUserId(Long userId) {
         List<Chat> chats = chatDao.findByUserId(userId);
 
         return chats.stream()
-                .map(chat -> new ChatDto(chat.getTitle(), chat.getImage().getImageData()))
+                .map(chat -> new ChatDto(chat.getId(), chat.getTitle(), chat.getImage().getImageData()))
                 .collect(Collectors.toList());
     }
 }

@@ -11,6 +11,5 @@ public interface ChatService {
     Optional<Chat> findById(Long id);
     List<Chat> findByUserId(Long userId);
     Chat save(Chat chat);
-    void deleteById(Long id);
     List<ChatDto> getChatHistoryByUserId(Long userId);
 }

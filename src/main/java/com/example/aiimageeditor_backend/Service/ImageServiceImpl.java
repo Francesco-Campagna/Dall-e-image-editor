@@ -177,5 +177,10 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
+    @Override
+    public void deleteById(Long id){
+        imageDao.deleteById(id);
+    }
+
 
 }

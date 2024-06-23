@@ -1,5 +1,6 @@
 package com.example.aiimageeditor_backend.Controller;
 
+import com.example.aiimageeditor_backend.Persistence.Entities.Chat;
 import com.example.aiimageeditor_backend.Persistence.Entities.Image;
 import com.example.aiimageeditor_backend.Service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,16 @@ public class ImageController {
     @PostMapping("/convert-generated-to-file")
     public ResponseEntity<byte[]> downloadImage(@RequestBody Map<String, String> requestBody) {
         return i.convertGeneratedToFile(requestBody);
+    }
+
+
+    @DeleteMapping("/delete/{chat}")
+    public void deleteChat(@PathVariable Chat chat){
+        try{
+            i.deleteById(chat.getImage().getId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

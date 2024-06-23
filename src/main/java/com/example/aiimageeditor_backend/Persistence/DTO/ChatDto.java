@@ -10,6 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatDto {
+    private Long id;
     private String title;
     private String imageData;
 }
