@@ -19,8 +19,15 @@
         <div class="chat-info">
           <h3>{{ chat.title }}</h3>
         </div>
+        <button class="delete-button" (click)="onDeleteClick(chat, $event)">
+          <i class="fa-solid fa-trash"></i>
+        </button>
       </div>
-
+    </div>
+    <div class="delete-popup" *ngIf="showDeletePopup">
+      <p>Do you want to delete image?</p>
+      <button class="confirmButton" (click)="deleteChat()">Yes</button>
+      <button class="cancelButton" (click)="closePopup()">No</button>
     </div>
   </div>
 

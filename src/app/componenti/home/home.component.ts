@@ -41,11 +41,7 @@ export class HomeComponent implements AfterViewInit{
 
 
     //Load chat
-    this.imageService.getChatHistory().subscribe({
-      next: (chat) => {
-        this.chats = chat;
-      }
-    });
+    this.updateChat();
   }
 
   apiKey = environment.apiKey;
@@ -77,6 +73,8 @@ export class HomeComponent implements AfterViewInit{
   generatedImage: any = null;
   editImageValue: boolean = false;
   chats : Chat[] = [];
+  showDeletePopup: boolean = false;
+  chatToDelete: Chat | undefined;
 
 
 
@@ -160,8 +158,6 @@ export class HomeComponent implements AfterViewInit{
 
   async callToEditOpenAi(image: any, mask: any){
     if (this.isLoading) return;
-    this.generatedImage = null;
-    this.selectedImage = null;
     this.setIsLoading(true);
 
     console.log("PASSO: " + image);
@@ -202,6 +198,8 @@ export class HomeComponent implements AfterViewInit{
       alert("You must provide a prompt");
       return;
     }
+    this.generatedImage = null;
+    this.selectedImage = null;
     if (!this.editImageValue){
       this.callToGenerateOpenAi()
     }else{
@@ -263,6 +261,7 @@ export class HomeComponent implements AfterViewInit{
     this.service.saveImage(imageData).subscribe(
       response => {
         console.log('Immagine salvata con successo:', response);
+        this.updateChat();
       },
       error => {
         console.error('Errore durante il salvataggio dell\'immagine:', error);
@@ -319,4 +318,37 @@ export class HomeComponent implements AfterViewInit{
     this.imageService.setSelectedImage(imgFile);
     this.selectedImage = URL.createObjectURL(imgFile);
   }
+
+  onDeleteClick(chat: Chat, event: Event){
+    event.stopPropagation()
+    this.showDeletePopup = true;
+    this.chatToDelete = chat
+    console.log(chat)
+  }
+
+  deleteChat() {
+    this.showDeletePopup = false;
+    if(this.chatToDelete){
+      this.service.deleteChat(this.chatToDelete).subscribe({
+        next: () => {
+          window.location.reload()
+        }
+      });
+    }
+  }
+
+  closePopup() {
+    this.showDeletePopup = false;
+  }
+
+  updateChat(){
+    this.imageService.getChatHistory().subscribe({
+      next: (chat) => {
+        this.chats = chat;
+      }
+    });
+  }
+
+
+
 }

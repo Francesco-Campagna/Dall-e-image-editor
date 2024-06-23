@@ -407,6 +407,62 @@ FINE PARTE POPUP IMAGE
   overflow: hidden; /* Nasconde il testo che esce dai limiti della card */
 }
 
+/* PARTE BUTTON*/
+
+.delete-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.delete-button i {
+  color: #fc3636;
+  font-size: 1.2em;
+}
+
+.delete-button:hover i {
+  color: #c90303;
+}
+
+/* PARTE POPUP */
+.delete-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  z-index: 20;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.delete-popup p {
+  font-size: 16px;
+  color: #333;
+}
+
+.delete-popup button {
+  margin-top: 5px;
+  padding: 8px 16px;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.cancelButton {
+  background-color: red;
+}
+
+.confirmButton {
+  background-color: #33cc33;
+}
+
 
 
 /* FINE CHAT */

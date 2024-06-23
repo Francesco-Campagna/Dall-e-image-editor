@@ -41,6 +41,10 @@ export class ServiceService {
     return this.http.get<Chat[]>('http://localhost:8080/api/chat/history/' + userId);
   }
 
+  deleteChat(chat: Chat){
+    return this.http.delete('http://localhost:8080/api/chat/delete/' + chat.id);
+  }
+
 
 
 
