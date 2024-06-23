@@ -42,7 +42,7 @@ export class ServiceService {
   }
 
   deleteChat(chat: Chat){
-    return this.http.delete('http://localhost:8080/api/chat/delete/' + chat.id);
+    return this.http.delete('http://localhost:8080/api/image/delete/' + chat.id);
   }
 
 
