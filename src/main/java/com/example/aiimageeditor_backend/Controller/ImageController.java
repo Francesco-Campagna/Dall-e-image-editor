@@ -48,5 +48,5 @@ public class ImageController {
             throw new RuntimeException(e);
         }
     }
-    
+
 }
