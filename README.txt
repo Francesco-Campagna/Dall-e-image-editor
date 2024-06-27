@@ -11,6 +11,13 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 
 
+create a file application.yaml in "src/main/resources" like:
+jwt:
+  secret: "with HS256 algorithm"
+  expiration: "token expiration time in milliseconds"
+
+
+
 
 IN FRONT-END:
 
