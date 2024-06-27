@@ -1,5 +1,6 @@
 package com.example.aiimageeditor_backend.Service;
 
+import com.example.aiimageeditor_backend.Config.JwtTokenUtil;
 import com.example.aiimageeditor_backend.Persistence.DAO.ChatDao;
 import com.example.aiimageeditor_backend.Persistence.DAO.ImageDao;
 import com.example.aiimageeditor_backend.Persistence.DAO.UserDao;
@@ -24,7 +25,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -36,12 +36,14 @@ public class ImageServiceImpl implements ImageService {
     private final ImageDao imageDao;
     private final UserDao userDao;
     private final ChatDao chatDao;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public ImageServiceImpl(ImageDao imageDao, UserDao userDao, ChatDao chatDao) {
+    public ImageServiceImpl(ImageDao imageDao, UserDao userDao, ChatDao chatDao, JwtTokenUtil jwtTokenUtil) {
         this.imageDao = imageDao;
         this.userDao = userDao;
         this.chatDao = chatDao;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @Override
@@ -113,7 +115,7 @@ public class ImageServiceImpl implements ImageService {
         // Recupera i dati dall'oggetto JSON
         String link = jsonNode.get("link").asText();
         String chatTitle = jsonNode.get("chatTitle").asText();
-        Long userId = jsonNode.get("userId").asLong();
+        String token = jsonNode.get("token").asText();
 
         // Esegui le operazioni necessarie sul link dell'immagine
         URL url = new URL(link);
@@ -126,9 +128,10 @@ public class ImageServiceImpl implements ImageService {
         chat.setTitle(chatTitle);
 
         // Recupero dell'utente dal repository
-        Optional<User> userOptional = userDao.findById(userId);
-        if (!userOptional.isPresent()) {
-            throw new IllegalArgumentException("Utente non trovato con ID: " + userId);
+        String email = jwtTokenUtil.extractUsername(token);
+        Optional<User> userOptional = Optional.ofNullable(userDao.findByEmail(email));
+        if (userOptional.isEmpty()) {
+            throw new IllegalArgumentException("Utente non trovato con ID: " + email);
         }
         User user = userOptional.get();
 

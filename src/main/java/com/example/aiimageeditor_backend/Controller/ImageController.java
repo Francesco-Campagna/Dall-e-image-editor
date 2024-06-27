@@ -1,14 +1,12 @@
 package com.example.aiimageeditor_backend.Controller;
 
 import com.example.aiimageeditor_backend.Persistence.Entities.Chat;
-import com.example.aiimageeditor_backend.Persistence.Entities.Image;
 import com.example.aiimageeditor_backend.Service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.*;
 import java.util.Map;
-import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -22,11 +20,6 @@ public class ImageController {
     @PostMapping("/save")
     public void saveImage(@RequestBody String imageData) throws IOException {
         i.saveImageAndCreateChat(imageData);
-    }
-
-    @GetMapping("getImage/{id}")
-    public Optional<Image> getImageById(@PathVariable String id){
-        return i.getImageById(Long.valueOf(id));
     }
 
 
@@ -55,7 +48,5 @@ public class ImageController {
             throw new RuntimeException(e);
         }
     }
-
-
-
+    
 }
