@@ -1,9 +1,11 @@
 package com.example.aiimageeditor_backend.Service;
 
+import com.example.aiimageeditor_backend.Config.JwtTokenUtil;
 import com.example.aiimageeditor_backend.Persistence.DAO.ChatDao;
+import com.example.aiimageeditor_backend.Persistence.DAO.UserDao;
 import com.example.aiimageeditor_backend.Persistence.DTO.ChatDto;
 import com.example.aiimageeditor_backend.Persistence.Entities.Chat;
-import jakarta.transaction.Transactional;
+import com.example.aiimageeditor_backend.Persistence.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +17,14 @@ import java.util.stream.Collectors;
 public class ChatServiceImpl implements ChatService {
 
     private final ChatDao chatDao;
+    private final UserDao userDao;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public ChatServiceImpl(ChatDao chatDao) {
+    public ChatServiceImpl(ChatDao chatDao, UserDao userDao) {
         this.chatDao = chatDao;
+        this.userDao = userDao;
     }
 
     @Override
@@ -42,8 +48,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
 
-    public List<ChatDto> getChatHistoryByUserId(Long userId) {
-        List<Chat> chats = chatDao.findByUserId(userId);
+    @Override
+    public List<ChatDto> getChatHistory(String jwt) {
+        String token = jwtTokenUtil.extractJwtToken(jwt);
+        String email = jwtTokenUtil.extractUsername(token);
+        User user = userDao.findByEmail(email);
+        List<Chat> chats = chatDao.findByUserId(user.getId());
 
         return chats.stream()
                 .map(chat -> new ChatDto(chat.getId(), chat.getTitle(), chat.getImage().getImageData()))

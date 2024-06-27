@@ -3,6 +3,7 @@ package com.example.aiimageeditor_backend.Controller;
 import com.example.aiimageeditor_backend.Persistence.DTO.ChatDto;
 import com.example.aiimageeditor_backend.Persistence.Entities.Chat;
 import com.example.aiimageeditor_backend.Service.ChatService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,11 @@ public class ChatController {
     private final ChatService c;
 
 
-    @GetMapping("/history/{userId}")
-    public ResponseEntity<List<ChatDto>> getChatHistory(@PathVariable Long userId) {
+    @GetMapping("/history")
+    public ResponseEntity<List<ChatDto>> getChatHistory(HttpServletRequest request) {
         try {
-            List<ChatDto> chatHistory = c.getChatHistoryByUserId(userId);
+            String jwt = request.getHeader("Authorization");
+            List<ChatDto> chatHistory = c.getChatHistory(jwt);
             return ResponseEntity.ok(chatHistory);
         } catch (Exception e) {
             e.printStackTrace();

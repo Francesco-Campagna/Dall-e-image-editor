@@ -11,5 +11,5 @@ public interface ChatService {
     Optional<Chat> findById(Long id);
     List<Chat> findByUserId(Long userId);
     Chat save(Chat chat);
-    List<ChatDto> getChatHistoryByUserId(Long userId);
+    List<ChatDto> getChatHistory(String jwt);
 }
