@@ -30,6 +30,7 @@ export class AuthService {
         if (token) {
           const bearerToken = token.replace('Bearer ', '');
           localStorage.setItem('token', bearerToken);
+          this.token = bearerToken;
         }
         return response.body;
       }),

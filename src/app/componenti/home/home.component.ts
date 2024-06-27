@@ -260,7 +260,7 @@ export class HomeComponent implements AfterViewInit{
   }
 
   saveGenerated() {
-    const imageData = { link: this.generatedImage, chatTitle: this.inputPrompt, userId: 1 };
+    const imageData = { link: this.generatedImage, chatTitle: this.inputPrompt, token: this.token };
     this.service.saveImage(imageData).subscribe(
       response => {
         console.log('Immagine salvata con successo:', response);
@@ -347,7 +347,7 @@ export class HomeComponent implements AfterViewInit{
 
   updateChat(){
     if(this.token){
-      this.imageService.getChatHistory(this.token).subscribe({
+      this.imageService.getChatHistory().subscribe({
         next: (chat) => {
           this.chats = chat;
         }

@@ -133,8 +133,8 @@ export class ImageService{
     }
   }
 
-  getChatHistory(jwt: string){
-    return this.service.getChatHistory(jwt);
+  getChatHistory(){
+    return this.service.getChatHistory();
   }
 
 
