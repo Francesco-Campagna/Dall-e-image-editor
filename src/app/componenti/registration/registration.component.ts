@@ -29,12 +29,6 @@ export class RegistrationComponent implements AfterViewInit{
     });
   }
 
-
-  showMessage(container: HTMLElement, message: string, type: 'success' | 'error') {
-    container.textContent = message;
-    container.className = `message ${type} show`;
-  }
-
   handleRegistration(){
     if (this.name && this.surname && this.email && this.phone && this.password) {
       const registrationDto = new RegistrationRequestDto();

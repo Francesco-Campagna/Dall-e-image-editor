@@ -8,6 +8,7 @@ import {ServiceService} from "../../Service/service";
 import { environment } from '../../../../config';
 import {ImageService} from "../../Service/imageService";
 import {Chat} from "../../Model/Chat";
+import {AuthService} from "../../auth/auth.service";
 
 
 
@@ -40,6 +41,7 @@ export class HomeComponent implements AfterViewInit{
     this.resizeObserver.observe(targetElement);
 
 
+    this.token = this.auth.token;
     //Load chat
     this.updateChat();
   }
@@ -53,7 +55,7 @@ export class HomeComponent implements AfterViewInit{
   })
 
 
-  constructor(private service:ServiceService, private imageService:ImageService, private elementRef: ElementRef) {
+  constructor(private service:ServiceService, private imageService:ImageService, private elementRef: ElementRef, private auth:AuthService) {
   }
 
 
@@ -75,6 +77,7 @@ export class HomeComponent implements AfterViewInit{
   chats : Chat[] = [];
   showDeletePopup: boolean = false;
   chatToDelete: Chat | undefined;
+  token: string | null = null;
 
 
 
@@ -316,6 +319,7 @@ export class HomeComponent implements AfterViewInit{
   onChatClick(chat: Chat) {
     let imgFile = this.imageService.convertPngStringToFile(chat.imageData, chat.title);
     this.imageService.setSelectedImage(imgFile);
+    this.generatedImage = null;
     this.selectedImage = URL.createObjectURL(imgFile);
   }
 
@@ -342,11 +346,13 @@ export class HomeComponent implements AfterViewInit{
   }
 
   updateChat(){
-    this.imageService.getChatHistory().subscribe({
-      next: (chat) => {
-        this.chats = chat;
-      }
-    });
+    if(this.token){
+      this.imageService.getChatHistory(this.token).subscribe({
+        next: (chat) => {
+          this.chats = chat;
+        }
+      });
+    }
   }
 
 

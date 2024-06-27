@@ -1,10 +1,12 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Image} from "../Model/Image";
 import {Observable} from "rxjs";
 import {FileLike} from "openai/uploads";
 import {toFile} from "openai";
 import {Chat} from "../Model/Chat";
+import {User} from "../Model/User";
+import {response} from "express";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,6 @@ export class ServiceService {
 
   constructor(private http: HttpClient) {
   }
-
   saveImage(imageData: { link: string, chatTitle: string, userId: number }) {
     return this.http.post('http://localhost:8080/api/image/save', imageData);
   }
@@ -37,8 +38,11 @@ export class ServiceService {
     });
   }
 
-  getChatHistory(userId: number): Observable<Chat[]> {
-    return this.http.get<Chat[]>('http://localhost:8080/api/chat/history/' + userId);
+  getChatHistory(jwt: string): Observable<Chat[]> {
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt
+    });
+    return this.http.get<Chat[]>('http://localhost:8080/api/chat/history', { headers: headers });
   }
 
   deleteChat(chat: Chat){

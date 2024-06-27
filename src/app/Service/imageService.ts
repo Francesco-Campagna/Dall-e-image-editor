@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ServiceService} from "./service";
 import {Coordinates} from "../Model/Coordinates";
+import {AuthService} from "../auth/auth.service";
 
 
 @Injectable({
@@ -16,7 +17,7 @@ export class ImageService{
   private formDataForEdit = new FormData();
   private mask: any;
 
-  constructor(private service:ServiceService) { }
+  constructor(private service:ServiceService, private auth:AuthService) { }
 
   setSelectedImage(image: File): void {
     this.selectedImage = image;
@@ -132,8 +133,8 @@ export class ImageService{
     }
   }
 
-  getChatHistory(){
-    return this.service.getChatHistory(1);
+  getChatHistory(jwt: string){
+    return this.service.getChatHistory(jwt);
   }
 
 

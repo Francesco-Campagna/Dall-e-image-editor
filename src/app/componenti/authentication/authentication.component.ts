@@ -7,8 +7,25 @@ import {AuthService} from "../../auth/auth.service";
   styleUrl: './authentication.component.css'
 })
 export class AuthenticationComponent {
+  isLoggin: boolean = false;
 
   constructor(public auth: AuthService) {
+    this.isLoggin = this.auth.isLoggedIn();
+  }
+
+  handleClick(){
+    if (this.checkLogin()){
+      this.auth.logout();
+      console.log("logout")
+      window.location.reload();
+    }else{
+      window.open('http://localhost:4200/access', '_self');
+    }
+  }
+
+  checkLogin(){
+    return this.auth.isLoggedIn();
+
   }
 
 }

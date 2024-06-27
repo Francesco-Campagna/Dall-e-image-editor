@@ -85,7 +85,6 @@ export class ImageSelectorComponent implements OnInit{
     this.showPopup = false;
     this.printCoordinates();
     if(this.selections.length > 0) {
-      console.log("ciao");
       this.imageService.confirmSelection(this.coordinates);
     }
   }
