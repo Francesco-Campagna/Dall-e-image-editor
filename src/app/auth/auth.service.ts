@@ -13,7 +13,6 @@ export class AuthService {
   private apiUrl = 'http://localhost:8080';
 
   token: string | null;
-  loggedUser: User | null = null;
 
 
   constructor(private http: HttpClient) {
@@ -45,6 +44,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     console.log("token rimosso")
+    window.location.reload();
   }
 
   isLoggedIn(): boolean {
@@ -68,7 +68,6 @@ export class AuthService {
 
         }
         console.log(response);
-        console.log("BODY: " + response.body)
 
         return response.body;
       }),

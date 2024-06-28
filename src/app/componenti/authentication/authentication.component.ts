@@ -17,7 +17,6 @@ export class AuthenticationComponent {
     if (this.checkLogin()){
       this.auth.logout();
       console.log("logout")
-      window.location.reload();
     }else{
       window.open('http://localhost:4200/access', '_self');
     }

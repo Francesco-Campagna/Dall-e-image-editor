@@ -5,8 +5,8 @@ import {HomeComponent} from "./componenti/home/home.component";
 import {AccessComponent} from "./componenti/access/access.component";
 import {LoginComponent} from "./componenti/login/login.component";
 import {RegistrationComponent} from "./componenti/registration/registration.component";
-import {AuthGuard} from "./auth/AuthGuard";
-import {WildcardGuard} from "./auth/WildcardGuard";
+import {AuthGuard} from "./auth/authGuard";
+import {WildcardGuard} from "./auth/wildcardGuard";
 import {DummyComponentComponent} from "./componenti/dummy-component/dummy-component.component";
 
 

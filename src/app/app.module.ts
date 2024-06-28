@@ -9,7 +9,7 @@ import {AuthenticationComponent} from "./componenti/authentication/authenticatio
 import {AppRoutingModule} from "./app-routing.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {FormsModule} from "@angular/forms";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +20,7 @@ import {AccessComponent} from "./componenti/access/access.component";
 import {LoginComponent} from "./componenti/login/login.component";
 import {RegistrationComponent} from "./componenti/registration/registration.component";
 import {DummyComponentComponent} from "./componenti/dummy-component/dummy-component.component";
+import {Interceptor} from "./auth/interceptor";
 
 
 
@@ -47,6 +48,7 @@ import {DummyComponentComponent} from "./componenti/dummy-component/dummy-compon
         MatMenuModule,
     ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true },
     provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]

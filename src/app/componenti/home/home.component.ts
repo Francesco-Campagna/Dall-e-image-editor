@@ -43,6 +43,7 @@ export class HomeComponent implements AfterViewInit{
 
     this.token = this.auth.token;
     //Load chat
+    console.log(this.token);
     this.updateChat();
   }
 
