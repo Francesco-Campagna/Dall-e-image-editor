@@ -31,6 +31,9 @@ public class User {
     @Column(name="surname")
     private String surname;
 
+    @Column(name="apiKey")
+    private String apiKey;
+
     @Column(name="phone")
     private String phone;
 

@@ -18,5 +18,8 @@ public interface UserService {
     UserDetails loadUserByUsername(String email);
     ResponseEntity<?> registerUser(RegistrationRequestDto registrationRequest);
     ResponseEntity<?> loginUser(LoginRequestDto loginRequest);
+    ResponseEntity<?> saveApiKey(String jwt, String apiKey);
+    String getApiKey(String token);
+
 
 }

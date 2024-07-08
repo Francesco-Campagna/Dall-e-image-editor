@@ -4,7 +4,9 @@ import com.example.aiimageeditor_backend.Config.JwtTokenUtil;
 import com.example.aiimageeditor_backend.Persistence.DAO.UserDao;
 import com.example.aiimageeditor_backend.Persistence.DTO.LoginRequestDto;
 import com.example.aiimageeditor_backend.Persistence.DTO.RegistrationRequestDto;
+import com.example.aiimageeditor_backend.Persistence.Entities.Chat;
 import com.example.aiimageeditor_backend.Persistence.Entities.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -112,7 +115,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username or password");
         }
 
         Optional<User> userDetails = Optional.ofNullable(userDao.findByEmail(loginRequest.getEmail()));
@@ -123,5 +126,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
         return ResponseEntity.ok().headers(headers).build();
+    }
+
+    @Override
+    public ResponseEntity<?> saveApiKey(String jwt, String apiKey) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, String> apiKeyMap = objectMapper.readValue(apiKey, Map.class);
+            String api = apiKeyMap.get("apiKey");
+
+            String token = jwtTokenUtil.extractJwtToken(jwt);
+            String email = jwtTokenUtil.extractUsername(token);
+
+            System.out.println("EMAIL: "+email);
+            System.out.println("API: "+api);
+
+            userDao.updateApiKey(email, api);
+            return ResponseEntity.ok("API key saved successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save API key");
+        }
+    }
+
+    @Override
+    public String getApiKey(String jwt) {
+        String token = jwtTokenUtil.extractJwtToken(jwt);
+        String email = jwtTokenUtil.extractUsername(token);
+        User user = userDao.findByEmail(email);
+        return user.getApiKey();
     }
 }

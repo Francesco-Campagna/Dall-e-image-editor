@@ -42,7 +42,7 @@ public class RequestFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.extractUsername(token);
             } catch (ExpiredJwtException | MalformedJwtException | SignatureException ignored) {
-                // Log or handle exceptions if needed
+
             }
         }
 
