@@ -12,12 +12,14 @@ import {User} from "../Model/User";
 export class AuthService {
   private apiUrl = 'http://localhost:8080';
 
+
   token: string | null;
+  apiKey: string | null;
 
 
   constructor(private http: HttpClient) {
     this.token = localStorage.getItem('token');
-
+    this.apiKey = "";
   }
 
   login(loginDto: LoginRequestDto): Observable<any> {
@@ -34,7 +36,7 @@ export class AuthService {
         return response.body;
       }),
       catchError(error => {
-        console.log("errore login");
+        console.log("login error");
         return throwError(error);
       })
     );
@@ -43,7 +45,6 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
-    console.log("token rimosso")
     window.location.reload();
   }
 

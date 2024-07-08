@@ -11,9 +11,7 @@
   <form class="loginForm">
     <input type="email" id="email" name="email" [(ngModel)]="email"  placeholder="Email address" required />
     <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="Password" required />
-    <div class="alert alert-warning" *ngIf='invalidLogin'>{{errorMessage}}</div>
-    <div class="alert alert-success" *ngIf='loginSuccess'>{{successMessage}}</div>
-    <a href="http://localhost:4200/password-recovery">Forgot password?</a>
+    <div class="invalidLogin" *ngIf='invalidLogin'>{{errorMessage}}</div>
     <button (click)="handleLogin()" type="submit">Continue</button>
     <button type="button" onclick="window.location.href='http://localhost:4200/access';">Back to access page</button>
 

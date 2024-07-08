@@ -34,7 +34,7 @@ body {
 }
 
 .loginDiv{
-  padding: 10px;
+  padding: 10px 10px 10px 0px;
 }
 
 
@@ -189,18 +189,24 @@ PARTE SULLA SELEZIONE DELL'IMMAGINE
 
  */
 
+.file-chooser-div {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
 
-#inputImage{
+
+.inputImage{
   color: white;
+  cursor: pointer;
 }
 
-
-/*
-.selected-image {
-  max-width: 100%; /* Imposta la larghezza massima al 100% del contenitore
-  max-height: 100%; /* Imposta l'altezza massima al 100% del contenitore
+.info-button {
+  padding-right: 10px;
+  cursor: pointer;
+  color: darkgray;
 }
-*/
 
 
 .save-reset-button-div {
@@ -279,52 +285,7 @@ FINE PARTE SELEZIONE IMMAGINE
 */
 
 
-/*
 
-INIZIO PARTE POPUP IMAGE
-
- */
-
-
-.popup-image-div {
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: rgba(0,0,0,.9);
-  height: 100%;
-  width: 100%;
-  z-index: 100;
-  align-content: center;
-  overflow-y: auto;
-}
-
-.popup-image-div span{
-  position: absolute;
-  top: 0;
-  right: 10px;
-  font-size: 40px;
-  font-weight: bolder;
-  color: #fff;
-  cursor: pointer;
-  z-index: 10;
-}
-
-#popup-image-img {
-  border: 5px solid #fff;
-  border-radius: 5px;
-  max-width: 100%;
-  max-height: 100%;
-  display: block;
-  margin: auto;
-}
-
-
-
-/*
-
-FINE PARTE POPUP IMAGE
-
- */
 
 /* SPINNER */
 .spinnerDiv {
@@ -466,3 +427,32 @@ FINE PARTE POPUP IMAGE
 
 
 /* FINE CHAT */
+
+
+/* SETTING */
+
+.settings-button {
+  background-color: transparent;
+  color: white;
+  border: none;
+  background-size: 50px;
+  cursor: pointer;
+  font-size: 30px;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+}
+
+.settings-button:hover {
+  color: #007bff;
+}
+
+
+/* FINE SETTINGS */
+
+
+#edit-label {
+  color: white;
+  padding-top: 20px;
+  font-weight: bold;
+}

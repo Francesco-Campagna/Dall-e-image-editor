@@ -59,6 +59,18 @@ export class ServiceService {
     return this.http.delete('http://localhost:8080/api/image/delete/' + chat.id, {headers});
   }
 
+  saveApiKey(apiKey: string) {
+    let headers = this.initializeHeaders();
+    return this.http.post('http://localhost:8080/api/user/saveApiKey', { apiKey: apiKey }, {headers});
+  }
+
+  getApiKey(){
+    let headers = this.initializeHeaders();
+    return this.http.get<{apiKey: string}>('http://localhost:8080/api/user/getApiKey', { headers });
+  }
+
+
+
 
 
 

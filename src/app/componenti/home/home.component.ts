@@ -9,6 +9,7 @@ import { environment } from '../../../../config';
 import {ImageService} from "../../Service/imageService";
 import {Chat} from "../../Model/Chat";
 import {AuthService} from "../../auth/auth.service";
+import {popup_message} from "../../popup_message";
 
 
 
@@ -43,17 +44,26 @@ export class HomeComponent implements AfterViewInit{
 
     this.token = this.auth.token;
     //Load chat
-    console.log(this.token);
     this.updateChat();
+
+    this.service.getApiKey().subscribe({
+      next: (response) => {
+        console.log("RICEVO API:", response.apiKey);
+        this.openai = new OpenAI({
+          apiKey: response.apiKey,
+          dangerouslyAllowBrowser: true
+        });
+      },
+      error: (err) => {
+        console.error('Error retrieving API key', err);
+        this.createPopup("missing_apiKey");
+      }
+    });
   }
 
-  apiKey = environment.apiKey;
 
 
-  private openai = new OpenAI({
-    apiKey: this.apiKey,
-    dangerouslyAllowBrowser: true
-  })
+
 
 
   constructor(private service:ServiceService, private imageService:ImageService, private elementRef: ElementRef, private auth:AuthService) {
@@ -79,6 +89,16 @@ export class HomeComponent implements AfterViewInit{
   showDeletePopup: boolean = false;
   chatToDelete: Chat | undefined;
   token: string | null = null;
+
+  // Variables for popup
+  isPopupVisible = false;
+  popupTitle = '';
+  popupMessage = '';
+
+  showSettings = false;
+
+  private openai:any;
+
 
 
 
@@ -122,11 +142,6 @@ export class HomeComponent implements AfterViewInit{
       combinedPrompt = `${combinedPrompt}, Mood: ${this.selectedMood}`;
     }
 
-    if(this.openai == undefined){
-      console.error('OpenAI non è disponibile lato server.');
-      return;
-    }
-
     try {
 
       const response = await this.openai.images.generate({
@@ -146,9 +161,7 @@ export class HomeComponent implements AfterViewInit{
 
     } catch (error) {
       console.error("Error generating the image:", error);
-      alert(
-        "Failed to generate the image. Check the console for more details."
-      );
+      this.createPopup("openAI_generation_error")
     }
     finally {
       this.setIsLoading(false);
@@ -163,9 +176,6 @@ export class HomeComponent implements AfterViewInit{
   async callToEditOpenAi(image: any, mask: any){
     if (this.isLoading) return;
     this.setIsLoading(true);
-
-    console.log("PASSO: " + image);
-    console.log("PASSO: " + mask);
 
     try {
 
@@ -187,9 +197,7 @@ export class HomeComponent implements AfterViewInit{
 
     } catch (error) {
       console.error("Error generating the image:", error);
-      alert(
-        "Failed to generate the image. Check the console for more details."
-      );
+      this.createPopup("openAI_edit_error")
     }
     finally {
       this.setIsLoading(false);
@@ -199,7 +207,11 @@ export class HomeComponent implements AfterViewInit{
 
   handleSubmit() {
     if(this.inputPrompt == ""){
-      alert("You must provide a prompt");
+      this.createPopup('missing_prompt')
+      return;
+    }
+    if(this.openai == undefined){
+      this.createPopup("openAI_client_error")
       return;
     }
     this.generatedImage = null;
@@ -225,17 +237,20 @@ export class HomeComponent implements AfterViewInit{
     const files = event.target.files;
     if (files && files.length > 0) {
       this.selectedImage = URL.createObjectURL(files[0]);
-      console.log(this.selectedImage);
       this.generatedImage = undefined;
       this.imageService.setSelectedImage(files[0]);
     }
+  }
+
+  popupFileChooser(){
+    this.createPopup('file_chooser')
   }
 
 
 
   resetImage(): void {
     if(this.editImageValue){
-      alert("Terminare l'edit dell'immagine prima del reset");
+      this.createPopup('terminate_edit')
       return;
     }
     this.selectedImage = null;
@@ -280,6 +295,12 @@ export class HomeComponent implements AfterViewInit{
 
   editImage() {
     this.editImageValue = this.imageService.editImageChange();
+    if (this.editImageValue) this.createPopup('editImage')
+  }
+
+
+  onPopupClosed() {
+    this.isPopupVisible = false;
   }
 
 
@@ -318,6 +339,7 @@ export class HomeComponent implements AfterViewInit{
 
 
   onChatClick(chat: Chat) {
+    if(this.checkEditValue()) return
     let imgFile = this.imageService.convertPngStringToFile(chat.imageData, chat.title);
     this.imageService.setSelectedImage(imgFile);
     this.generatedImage = null;
@@ -325,6 +347,7 @@ export class HomeComponent implements AfterViewInit{
   }
 
   onDeleteClick(chat: Chat, event: Event){
+    if(this.checkEditValue()) return
     event.stopPropagation()
     this.showDeletePopup = true;
     this.chatToDelete = chat
@@ -354,6 +377,33 @@ export class HomeComponent implements AfterViewInit{
         }
       });
     }
+  }
+
+  createPopup(type: keyof typeof popup_message){
+    const msg = popup_message[type];
+    if (msg) {
+      this.popupTitle = msg.title;
+      this.popupMessage = msg.message;
+      this.isPopupVisible = true;
+    } else {
+      console.error(`No popup message found for type: ${type}`);
+    }
+  }
+
+  openSettings() {
+    this.showSettings = true;
+  }
+
+  closeSettings() {
+    this.showSettings = false;
+  }
+
+  checkEditValue(){
+    if(this.editImageValue){
+      this.createPopup("terminate_edit")
+      return true
+    }
+    return false
   }
 
 

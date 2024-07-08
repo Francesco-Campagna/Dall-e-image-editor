@@ -1,0 +1,14 @@
+<div class="settings-popup">
+    <label for="apiKey">API Key:</label>
+    <input type="text" id="apiKey" name="apiKey" [(ngModel)]="apiKey" required>
+    <div class="button-div">
+      <button type="reset" id="cancel-button" (click)="cancel()">Cancel</button>
+      <button type="submit" id="save-button" (click)="saveApiKey()">Save</button>
+    </div>
+</div>
+<app-popup
+  *ngIf="isPopupVisible"
+  [title]="popupTitle"
+  [message]="popupMessage"
+  (closed)="onPopupClosed()">
+</app-popup>

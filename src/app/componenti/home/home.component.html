@@ -78,7 +78,11 @@
       <h2>Or choose file to upload</h2>
 
 
-      <input id="inputImage" #photoInput type="file" (change)="fileInputChange($event)" accept="image/*"/>
+      <div class="file-chooser-div">
+        <mat-icon class="info-button" (click)="popupFileChooser()">info</mat-icon>
+        <input class="inputImage" type="file" (change)="fileInputChange($event)" accept="image/*" lang="en" />
+      </div>
+
       <div class="save-reset-button-div">
         <button *ngIf="selectedImage || generatedImage" class="save-button" (click)="saveImage()">Save image</button>
         <button *ngIf="selectedImage || generatedImage" class="edit-button" (click)="editImage()">Edit image</button>
@@ -94,12 +98,12 @@
         <p>Loading...</p>
       </div>
 
-
       <div class="image-container">
         <img *ngIf="selectedImage && !editImageValue" id="selected-image" [src]="selectedImage" alt="Selected Image" />
       </div>
     </div>
 
+    <label id="edit-label" *ngIf="editImageValue">Edit mode. (Click edit button to exit)</label>
 
 
     <div>
@@ -111,8 +115,21 @@
   </div>
 
   <div class="loginDiv">
+    <mat-icon class="settings-button" (click)="openSettings()">settings</mat-icon>
+  </div>
+  <app-settings *ngIf="showSettings" (close)="closeSettings()"></app-settings>
+
+
+  <div class="loginDiv">
     <app-authentication></app-authentication>
   </div>
+
+  <app-popup
+    *ngIf="isPopupVisible"
+    [title]="popupTitle"
+    [message]="popupMessage"
+    (closed)="onPopupClosed()">
+  </app-popup>
 
 </div>
 </body>
