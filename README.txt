@@ -15,17 +15,3 @@ create a file application.yaml in "src/main/resources" like:
 jwt:
   secret: "with HS256 algorithm"
   expiration: "token expiration time in milliseconds"
-
-
-
-
-IN FRONT-END:
-
-create a file config.ts in root:
-
-export const environment = {
-  production: false,
-  apiKey: 'your openai key'
-};
-
-
