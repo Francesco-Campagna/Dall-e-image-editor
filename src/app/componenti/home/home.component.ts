@@ -5,7 +5,6 @@ import {
 } from '@angular/core';
 import OpenAI from "openai";
 import {ServiceService} from "../../Service/service";
-import { environment } from '../../../../config';
 import {ImageService} from "../../Service/imageService";
 import {Chat} from "../../Model/Chat";
 import {AuthService} from "../../auth/auth.service";
