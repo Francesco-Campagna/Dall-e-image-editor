@@ -52,7 +52,7 @@ Download and install DBeaver from https://dbeaver.io/download/
 
 Launch DBeaver and create a new database connection.
 
-Use the following details (modify as per your setup):
+Use the following details (modify as your setup):
 ```
 Host: localhost (or your database server IP)
 Port: 5432 (or your PostgreSQL port)
