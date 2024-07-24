@@ -4,13 +4,13 @@
 This web application enables users to generate and edit images by selecting portions of images and inputting text. Users can choose to generate images from a geenrated image or start with one of their choice, utilizing requests to the Dall-e API. After registering and logging in, users need to add an API key to their profile for generation requests. Generated images are saved in a user-specific history for easy access and reference.
 
 
-
+### Java version 17.0.2
 
 ## Front-end Installation
 
 ### Node.js and npm Installation:
 
-#### Download and install Node.js from https://nodejs.org
+#### Download and install Node.js from https://nodejs.org (version 20.10.0)
 
 Verify the installation of Node.js and npm by running the following commands in your terminal or command prompt:
 
@@ -19,7 +19,7 @@ node -v
 npm -v
 ```
 
-### Angular installation
+### Angular installation (version 17.0.5)
 
 Open your terminal or command prompt.
 Install Angular CLI globally by running the following command:
